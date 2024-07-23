@@ -34,7 +34,7 @@ const TodoFilter: React.FC<TodoFilterProps> = ({ filter, onFilterChange }) => {
       </select>
       <input
         type="text"
-        placeholder="詳細で絞り込み"
+        placeholder="期限で絞り込み"
         value={filter.deadline}
         onChange={e => onFilterChange({ ...filter, deadline: e.target.value })}
       />

@@ -14,25 +14,25 @@ const TodoList: React.FC = () => {
   const [nextId, setNextId] = useState<number>(1);
 
   const addTodo = (newTodo: Omit<Todo, 'id'>) => {
-    const todoWithId: Todo = { ...newTodo, id: nextId };
-    setTodos([...todos, todoWithId]);
-    setNextId(nextId + 1);
+    setTodos(prevTodos => [...prevTodos, { ...newTodo, id: nextId }]);
+    setNextId(prevId => prevId + 1);
   };
 
   const deleteTodo = (id: number) => {
-    setTodos(todos.filter(todo => todo.id !== id));
+    setTodos(prevTodos => prevTodos.filter(todo => todo.id !== id));
   };
 
   const handleStatusChange = (id: number, newStatus: '未着手' | '進行中' | '完了') => {
-    setTodos(todos.map(todo => (todo.id === id ? { ...todo, status: newStatus } : todo)));
+    setTodos(prevTodos =>
+      prevTodos.map(todo => (todo.id === id ? { ...todo, status: newStatus } : todo))
+    );
   };
 
   const filteredTodos = todos.filter(todo => {
-    return (
-      (filter.id === '' || todo.id.toString().includes(filter.id)) &&
-      (filter.status === '' || todo.status === filter.status) &&
-      (filter.deadline === '' || todo.detail.includes(filter.deadline))
-    );
+    const matchesId = filter.id === '' || todo.id.toString().includes(filter.id);
+    const matchesStatus = filter.status === '' || todo.status === filter.status;
+    const matchesDeadline = filter.deadline === '' || todo.detail.includes(filter.deadline);
+    return matchesId && matchesStatus && matchesDeadline;
   });
 
   return (

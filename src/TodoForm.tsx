@@ -13,23 +13,27 @@ const TodoForm: React.FC<TodoFormProps> = ({ onAdd }) => {
     setNewTodo({ title: '', status: '未着手', detail: '' });
   };
 
+  const handleInputChange = (field: keyof Omit<Todo, 'id'>) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setNewTodo({ ...newTodo, [field]: e.target.value });
+  };
+
   return (
     <div>
       <input
         type="text"
         placeholder="タイトル"
         value={newTodo.title}
-        onChange={e => setNewTodo({ ...newTodo, title: e.target.value })}
+        onChange={handleInputChange('title')}
       />
       <input
         type="text"
         placeholder="詳細"
         value={newTodo.detail}
-        onChange={e => setNewTodo({ ...newTodo, detail: e.target.value })}
+        onChange={handleInputChange('detail')}
       />
       <select
         value={newTodo.status}
-        onChange={e => setNewTodo({ ...newTodo, status: e.target.value as '未着手' | '進行中' | '完了' })}
+        onChange={handleInputChange('status')}
       >
         <option value="未着手">未着手</option>
         <option value="進行中">進行中</option>
