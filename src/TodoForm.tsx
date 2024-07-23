@@ -1,46 +1,90 @@
 import React, { useState } from 'react';
+import { TextField, Button, MenuItem, Select, Grid } from '@mui/material';
 import { Todo } from './types';
 
 interface TodoFormProps {
-  onAdd: (todo: Omit<Todo, 'id'>) => void;
+  onAdd: (newTodo: Omit<Todo, 'id' | 'creationDate' | 'updateDate'>) => void;
 }
 
 const TodoForm: React.FC<TodoFormProps> = ({ onAdd }) => {
-  const [newTodo, setNewTodo] = useState<Omit<Todo, 'id'>>({ title: '', status: '未着手', detail: '' });
+  const [title, setTitle] = useState('');
+  const [detail, setDetail] = useState('');
+  const [deadline, setDeadline] = useState('');
+  const [status, setStatus] = useState<'未着手' | '進行中' | '完了'>('未着手');
 
-  const handleAddClick = () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (title.trim() === '' || detail.trim() === '' || deadline.trim() === '') {
+      alert('すべてのフィールドを入力してください。');
+      return;
+    }
+
+    const newTodo: Omit<Todo, 'id' | 'creationDate' | 'updateDate'> = {
+      title,
+      detail,
+      deadline,
+      status,
+    };
+
     onAdd(newTodo);
-    setNewTodo({ title: '', status: '未着手', detail: '' });
-  };
 
-  const handleInputChange = (field: keyof Omit<Todo, 'id'>) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setNewTodo({ ...newTodo, [field]: e.target.value });
+    // フォームをリセット
+    setTitle('');
+    setDetail('');
+    setDeadline('');
+    setStatus('未着手');
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        placeholder="タイトル"
-        value={newTodo.title}
-        onChange={handleInputChange('title')}
-      />
-      <input
-        type="text"
-        placeholder="詳細"
-        value={newTodo.detail}
-        onChange={handleInputChange('detail')}
-      />
-      <select
-        value={newTodo.status}
-        onChange={handleInputChange('status')}
-      >
-        <option value="未着手">未着手</option>
-        <option value="進行中">進行中</option>
-        <option value="完了">完了</option>
-      </select>
-      <button onClick={handleAddClick}>追加</button>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            fullWidth
+            label="タイトル"
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            fullWidth
+            label="詳細"
+            multiline
+            rows={4}
+            value={detail}
+            onChange={e => setDetail(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <TextField
+            fullWidth
+            label="期限"
+            type="date"
+            InputLabelProps={{ shrink: true }}
+            value={deadline}
+            onChange={e => setDeadline(e.target.value)}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Select
+            fullWidth
+            value={status}
+            onChange={e => setStatus(e.target.value as '未着手' | '進行中' | '完了')}
+          >
+            <MenuItem value="未着手">未着手</MenuItem>
+            <MenuItem value="進行中">進行中</MenuItem>
+            <MenuItem value="完了">完了</MenuItem>
+          </Select>
+        </Grid>
+        <Grid item xs={12}>
+          <Button type="submit" variant="contained" color="primary">
+            TODOを追加
+          </Button>
+        </Grid>
+      </Grid>
+    </form>
   );
 };
 

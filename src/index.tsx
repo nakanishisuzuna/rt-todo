@@ -1,10 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import TodoList from './TodoList'; // TodoListコンポーネントをインポート
+import App from './App';
+import { RecoilRoot } from 'recoil';
 
 ReactDOM.render(
   <React.StrictMode>
-    <TodoList />
+    <RecoilRoot>
+      <App />
+    </RecoilRoot>
   </React.StrictMode>,
-  document.getElementById('root') // HTMLのroot要素にマウント
+  document.getElementById('root')
 );
